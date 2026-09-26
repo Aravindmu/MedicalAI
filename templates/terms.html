@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Terms of Service - MediPulse{% endblock %}
+{% block content %}
+<main class="privacy-page">
+    <section class="privacy-hero">
+        <a class="back-link" href="{{ url_for('home') }}"><i class="fa-solid fa-arrow-left"></i> Back to MediPulse</a>
+        <span class="hero-badge"><i class="fa-solid fa-file-contract"></i> Service terms</span>
+        <h1>Terms of<br><em>Service.</em></h1>
+        <p>Last updated: September 10, 2026</p>
+    </section>
+
+    <div class="privacy-layout">
+        <aside class="privacy-summary">
+            <span class="eyebrow">Please note</span>
+            <p>By using MediPulse, you agree to use the service responsibly and understand that its health tools provide general education, not professional medical care.</p>
+            <a href="{{ url_for('privacy') }}">Read our Privacy Policy <i class="fa-solid fa-arrow-right"></i></a>
+        </aside>
+
+        <section class="privacy-content">
+            <article>
+                <h2>1. Accepting these terms</h2>
+                <p>These Terms of Service govern your use of MediPulse and its health education, AI assistant, report analysis, and screening features. If you do not agree with these terms, please do not use the service.</p>
+            </article>
+            <article>
+                <h2>2. Educational use only</h2>
+                <p>MediPulse is intended for general education and wellness information. Its responses, screening results, and explanations are not medical advice, diagnoses, treatment recommendations, or emergency services. Always consult a qualified healthcare professional for personal medical decisions.</p>
+            </article>
+            <article>
+                <h2>3. Emergencies</h2>
+                <p>Do not use MediPulse for urgent or life-threatening situations. Contact local emergency services or go to the nearest emergency department when immediate care is needed.</p>
+            </article>
+            <article>
+                <h2>4. Responsible use</h2>
+                <p>You agree to provide information carefully, use only files and data you are authorized to submit, and avoid uploading unnecessary identifying or confidential information. You must not use the service to harm others, interfere with its operation, or attempt to gain unauthorized access.</p>
+            </article>
+            <article>
+                <h2>5. AI-generated information</h2>
+                <p>AI-generated content may be incomplete, outdated, or incorrect. You are responsible for reviewing information critically and confirming important health decisions with a qualified professional. MediPulse does not guarantee the accuracy or availability of any generated response.</p>
+            </article>
+            <article>
+                <h2>6. Intellectual property</h2>
+                <p>MediPulse, its design, software, branding, and original content are protected by applicable intellectual property laws. You may use the service for its intended personal or organizational purpose, but may not copy, modify, distribute, or commercially exploit it without permission.</p>
+            </article>
+            <article>
+                <h2>7. Availability and changes</h2>
+                <p>Features may change, be suspended, or become unavailable as the service is maintained and improved. We may also update these terms from time to time. Continued use after an update means you accept the revised terms.</p>
+            </article>
+            <article>
+                <h2>8. Disclaimer of liability</h2>
+                <p>To the extent permitted by law, MediPulse and its operators are not responsible for losses or harm resulting from reliance on information provided by the service, interruptions, technical errors, or unauthorized access beyond reasonable control.</p>
+            </article>
+            <div class="privacy-disclaimer"><i class="fa-solid fa-triangle-exclamation"></i><strong>Important:</strong><span>These terms are a general product-use notice and are not a substitute for advice from a qualified legal professional.</span></div>
+        </section>
+    </div>
+</main>
+{% endblock %}

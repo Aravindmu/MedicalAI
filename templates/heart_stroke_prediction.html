@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Heart Stroke Risk Check - MediPulse{% endblock %}
+{% block content %}
+<main class="heart-page">
+    <section class="heart-intro">
+        <a class="back-link" href="{{ url_for('home') }}#predictions"><i class="fa-solid fa-arrow-left"></i> Back to predictions</a>
+        <span class="hero-badge"><i class="fa-solid fa-heart-pulse"></i> Personal health screening</span>
+        <h1>Understand your<br><em>heart health risk.</em></h1>
+        <p>Enter clinical and lifestyle details to receive an educational heart-stroke stage screening.</p>
+        <!-- <div class="screening-note"><i class="fa-solid fa-circle-info"></i><span>This tool is for educational screening only and is not a diagnosis or emergency service.</span></div> -->
+    </section>
+
+    <section class="heart-panel">
+        <div class="heart-panel-heading">
+            <div><span class="eyebrow">Heart stroke risk check</span><h2>Clinical details</h2></div>
+            <!-- <span class="step">01 / 01</span> -->
+        </div>
+        {% if error %}<div class="obesity-alert">{{ error }}</div>{% endif %}
+        <form method="post" class="heart-form">
+            <div class="heart-form-grid">
+                <label>Age <span>(years)</span><input name="age" type="number" min="1" max="120" step="1" placeholder="54" required></label>
+                <label>BMI <span>(kg/m²)</span><input name="bmi" type="number" min="10" max="80" step="0.1" placeholder="26.1" required></label>
+                <label>Resting blood pressure <span>(mmHg)</span><input name="trestbps" type="number" min="50" max="300" step="0.1" placeholder="130" required></label>
+                <label>Serum cholesterol <span>(mg/dL)</span><input name="chol" type="number" min="50" max="600" step="0.1" placeholder="220" required></label>
+                <label>Maximum heart rate <span>(bpm)</span><input name="thalch" type="number" min="30" max="250" step="0.1" placeholder="140" required></label>
+                <label>ST depression <span>(oldpeak)</span><input name="oldpeak" type="number" min="-5" max="10" step="0.01" placeholder="0.8" required></label>
+                <label>Sex<select name="sex" required><option value="">Choose</option><option value="1">Male</option><option value="0">Female</option></select></label>
+                <label>Chest pain type<select name="cp" required><option value="">Choose</option><option value="asymptomatic">Asymptomatic</option><option value="non-anginal">Non-anginal</option><option value="atypical angina">Atypical angina</option><option value="typical angina">Typical angina</option></select></label>
+                <label>Resting ECG result<select name="restecg" required><option value="">Choose</option><option value="normal">Normal</option><option value="lv hypertrophy">LV hypertrophy</option><option value="st-t abnormality">ST-T abnormality</option></select></label>
+                <label>ST segment slope<select name="slope" required><option value="">Choose</option><option value="0">Upsloping</option><option value="1">Flat</option><option value="2">Downsloping</option></select></label>
+                <label>Smoking status<select name="smoking_status" required><option value="">Choose</option><option value="0">Never</option><option value="1">Former</option><option value="2">Current</option></select></label>
+                <label>Dataset location<select name="dataset" required><option value="">Choose</option><option>Cleveland</option><option>Hungary</option><option>Switzerland</option><option>VA Long Beach</option></select></label>
+                <label>Fasting blood sugar above 120<select name="fbs" required><option value="">Choose</option><option value="0">False</option><option value="1">True</option></select></label>
+                <label>Exercise-induced angina<select name="exang" required><option value="">Choose</option><option value="0">False</option><option value="1">True</option></select></label>
+                <label>Diabetes<select name="diabetes" required><option value="">Choose</option><option value="0">No</option><option value="1">Yes</option></select></label>
+                <label>Family history<select name="family_history" required><option value="">Choose</option><option value="0">No</option><option value="1">Yes</option></select></label>
+            </div>
+            <button type="submit" class="btn-primary heart-submit">Predict heart stroke stage <i class="fa-solid fa-arrow-right"></i></button>
+        </form>
+        {% if result %}
+        <div class="heart-result {{ 'high' if result.is_high_risk else 'low' }}">
+            <i class="fa-solid {{ 'fa-triangle-exclamation' if result.is_high_risk else 'fa-circle-check' }}"></i>
+            <div><span class="eyebrow">Screening result</span><strong>{{ result.label }}</strong><p>This model result is educational and should be reviewed with a qualified healthcare professional.</p></div>
+        </div>
+        {% endif %}
+    </section>
+</main>
+{% endblock %}

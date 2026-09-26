@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Health Facts - MediPulse{% endblock %}
+{% block content %}
+<main class="facts-page">
+    <section class="facts-hero">
+        <a class="back-link" href="{{ url_for('home') }}"><i class="fa-solid fa-arrow-left"></i> Back to MediPulse</a>
+        <span class="hero-badge"><i class="fa-solid fa-book-medical"></i> Everyday health knowledge</span>
+        <h1>Small facts.<br><em>Better habits.</em></h1>
+        <p>Practical health information to help you make sense of everyday choices and start more informed conversations with your care team.</p>
+    </section>
+
+    <section class="facts-grid" aria-label="Health facts">
+        <article class="fact-card fact-card-featured">
+            <span class="fact-number">01</span>
+            <div class="fact-icon"><i class="fa-solid fa-person-walking"></i></div>
+            <span class="eyebrow">Movement</span>
+            <h2>Regular activity supports the whole body</h2>
+            <p>Physical activity can support heart health, mood, sleep, strength, and day-to-day function. Start with manageable movement and build gradually.</p>
+        </article>
+        <article class="fact-card">
+            <span class="fact-number">02</span>
+            <div class="fact-icon"><i class="fa-solid fa-bed"></i></div>
+            <span class="eyebrow">Sleep</span>
+            <h2>Sleep is part of preventive care</h2>
+            <p>Consistent, restorative sleep helps support attention, emotional wellbeing, immune function, and healthy routines.</p>
+        </article>
+        <article class="fact-card">
+            <span class="fact-number">03</span>
+            <div class="fact-icon"><i class="fa-solid fa-droplet"></i></div>
+            <span class="eyebrow">Hydration</span>
+            <h2>Water needs vary from person to person</h2>
+            <p>Thirst, activity, climate, diet, and health conditions all affect hydration needs. A clinician can offer personalized guidance.</p>
+        </article>
+        <article class="fact-card">
+            <span class="fact-number">04</span>
+            <div class="fact-icon"><i class="fa-solid fa-apple-whole"></i></div>
+            <span class="eyebrow">Nutrition</span>
+            <h2>Balanced patterns matter more than perfection</h2>
+            <p>A varied eating pattern with nourishing foods can support health. Sustainable changes are usually more useful than extreme short-term plans.</p>
+        </article>
+        <article class="fact-card">
+            <span class="fact-number">05</span>
+            <div class="fact-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+            <span class="eyebrow">Prevention</span>
+            <h2>Screenings are conversation starters</h2>
+            <p>A screening result can highlight something worth discussing, but it cannot confirm a diagnosis or replace a professional evaluation.</p>
+        </article>
+        <article class="fact-card">
+            <span class="fact-number">06</span>
+            <div class="fact-icon"><i class="fa-solid fa-user-doctor"></i></div>
+            <span class="eyebrow">Care</span>
+            <h2>Your context belongs in every health decision</h2>
+            <p>Age, medications, history, environment, and personal goals all matter. Share relevant details with a qualified healthcare professional.</p>
+        </article>
+    </section>
+
+    <section class="facts-footer-note">
+        <i class="fa-solid fa-circle-info"></i>
+        <div><strong>Use facts as a starting point.</strong><p>This page provides general education, not medical advice. For symptoms, diagnosis, or treatment decisions, speak with a qualified healthcare professional.</p></div>
+    </section>
+</main>
+{% endblock %}

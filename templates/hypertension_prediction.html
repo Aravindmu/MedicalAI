@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Hypertension Risk Check - MediPulse{% endblock %}
+{% block content %}
+<main class="hypertension-page">
+    <section class="hypertension-intro">
+        <a class="back-link" href="{{ url_for('home') }}#predictions"><i class="fa-solid fa-arrow-left"></i> Back to predictions</a>
+        <span class="hero-badge"><i class="fa-solid fa-gauge-high"></i> Personal health screening</span>
+        <h1>Understand your<br><em>blood pressure risk.</em></h1>
+        <p>Enter a few health details to receive a simple hypertension risk screening and a starting point for a conversation with your care team.</p>
+        <!-- <div class="screening-note"><i class="fa-solid fa-circle-info"></i><span>This tool is for educational screening only and is not a medical diagnosis.</span></div> -->
+    </section>
+
+    <section class="hypertension-panel">
+        <div class="hypertension-panel-heading">
+            <div><span class="eyebrow">Hypertension risk check</span><h2>Your health details</h2></div>
+            <!-- <span class="step">01 / 01</span> -->
+        </div>
+        {% if error %}<div class="obesity-alert">{{ error }}</div>{% endif %}
+        <form method="post" class="hypertension-form">
+            <div class="hypertension-form-grid">
+                <label>Age <span>(years)</span><input name="Age" type="number" min="1" max="120" required></label>
+                <label>BMI <span>(kg/m²)</span><input name="BMI" type="number" min="10" max="80" step="0.1" required></label>
+                <label>Cholesterol <span>(mg/dL)</span><input name="Cholesterol" type="number" min="50" max="600" required></label>
+                <label>Systolic BP <span>(mmHg)</span><input name="Systolic_BP" type="number" min="50" max="300" required></label>
+                <label>Diastolic BP <span>(mmHg)</span><input name="Diastolic_BP" type="number" min="30" max="200" required></label>
+                <label>Heart rate <span>(bpm)</span><input name="Heart_Rate" type="number" min="30" max="220" required></label>
+                <label>Glucose <span>(mg/dL)</span><input name="Glucose" type="number" min="30" max="500" required></label>
+                <label>Sleep duration <span>(hours)</span><input name="Sleep_Duration" type="number" min="0" max="24" step="0.5" required></label>
+                <label>Alcohol intake <span>(drinks/week)</span><input name="Alcohol_Intake" type="number" min="0" max="100" step="0.1" required></label>
+                <label>Stress level <span>(0-10)</span><input name="Stress_Level" type="number" min="0" max="10" step="0.1" required></label>
+                <label>Salt intake <span>(g/day)</span><input name="Salt_Intake" type="number" min="0" max="50" step="0.1" required></label>
+                <label>Gender<select name="Gender" required><option value="">Choose</option><option>Female</option><option>Male</option></select></label>
+                <label>Smoking status<select name="Smoking_Status" required><option value="">Choose</option><option>Yes</option><option>No</option></select></label>
+                <label>Physical activity<select name="Physical_Activity_Level" required><option value="">Choose</option><option>Low</option><option>Moderate</option><option>High</option></select></label>
+                <label>Family history<select name="Family_History" required><option value="">Choose</option><option>Yes</option><option>No</option></select></label>
+                <label>Diabetes<select name="Diabetes" required><option value="">Choose</option><option>Yes</option><option>No</option></select></label>
+            </div>
+            <button type="submit" class="btn-primary hypertension-submit">Check my risk <i class="fa-solid fa-arrow-right"></i></button>
+        </form>
+        {% if result %}
+        <div class="hypertension-result {{ 'high' if result.level == 'High' else 'low' }}">
+            <i class="fa-solid {{ 'fa-triangle-exclamation' if result.level == 'High' else 'fa-circle-check' }}"></i>
+            <div><span class="eyebrow">Screening result</span><strong>{{ result.level }} risk</strong><p>Model confidence: {{ result.score }}%. {{ result.message }}</p></div>
+        </div>
+        {% endif %}
+    </section>
+</main>
+{% endblock %}

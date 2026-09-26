@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Privacy Policy - MediPulse{% endblock %}
+{% block content %}
+<main class="privacy-page">
+    <section class="privacy-hero">
+        <a class="back-link" href="{{ url_for('home') }}"><i class="fa-solid fa-arrow-left"></i> Back to MediPulse</a>
+        <span class="hero-badge"><i class="fa-solid fa-lock"></i> Your privacy matters</span>
+        <h1>Privacy<br><em>Policy.</em></h1>
+        <p>Last updated: September 10, 2026</p>
+    </section>
+
+    <div class="privacy-layout">
+        <aside class="privacy-summary">
+            <span class="eyebrow">At a glance</span>
+            <p>MediPulse is designed to help you explore health information. Please avoid entering identifying details or information you would not want processed by an online service.</p>
+            <a href="{{ url_for('about') }}">Learn about MediPulse <i class="fa-solid fa-arrow-right"></i></a>
+        </aside>
+
+        <section class="privacy-content">
+            <article>
+                <h2>1. Information we receive</h2>
+                <p>When you use MediPulse, you may provide health-related questions, report files, or details entered into a screening form. We also receive basic technical information required for the site to operate, such as request data and error logs.</p>
+            </article>
+            <article>
+                <h2>2. How information is used</h2>
+                <p>Information is used to provide requested responses, analyze an uploaded report, calculate screening results, maintain the service, and improve reliability. We do not use screening results to make decisions about your access to healthcare, insurance, employment, or services.</p>
+            </article>
+            <article>
+                <h2>3. AI and screening tools</h2>
+                <p>AI responses and prediction tools can be incomplete or inaccurate. They are provided for education and general guidance only, and are not a diagnosis, treatment plan, or substitute for advice from a qualified healthcare professional.</p>
+            </article>
+            <article>
+                <h2>4. Uploaded reports</h2>
+                <p>Only upload reports you are authorized to share. Remove names, addresses, record numbers, and other direct identifiers whenever possible. Do not use this service for emergencies or urgent medical decisions.</p>
+            </article>
+            <article>
+                <h2>5. Security and retention</h2>
+                <p>We use reasonable technical measures to protect information while it is processed. No online service can guarantee complete security. Information may be retained in application or service logs for troubleshooting and operational purposes, subject to the environment in which MediPulse is deployed.</p>
+            </article>
+            <article>
+                <h2>6. Your choices</h2>
+                <p>You can stop using MediPulse at any time and choose not to submit health information. For questions about data handled by a specific deployment, contact the organization operating that deployment.</p>
+            </article>
+            <article>
+                <h2>7. Policy updates</h2>
+                <p>We may update this policy as the service changes. The date at the top of this page indicates when the current version was published.</p>
+            </article>
+            <div class="privacy-disclaimer"><i class="fa-solid fa-triangle-exclamation"></i><strong>Need urgent help?</strong><span>Contact local emergency services or a qualified medical professional instead of relying on this website.</span></div>
+        </section>
+    </div>
+</main>
+{% endblock %}

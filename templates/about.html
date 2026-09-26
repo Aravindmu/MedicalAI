@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}About MediPulse{% endblock %}
+{% block content %}
+<main class="about-page">
+    <section class="about-hero">
+        <a class="back-link" href="{{ url_for('home') }}"><i class="fa-solid fa-arrow-left"></i> Back to MediPulse</a>
+        <span class="hero-badge"><i class="fa-solid fa-heart-pulse"></i> About MediPulse</span>
+        <h1>Health insight,<br><em>made clearer.</em></h1>
+        <p class="about-lead">MediPulse brings helpful health education, guided screening tools, and AI-assisted explanations together in one calm, accessible place.</p>
+    </section>
+
+    <section class="about-story">
+        <div class="about-story-heading">
+            <span class="eyebrow">Our purpose</span>
+            <h2>Technology should help people ask better health questions.</h2>
+        </div>
+        <div class="about-story-copy">
+            <p>Health information can feel overwhelming when it is scattered across charts, searches, and unfamiliar terms. MediPulse is designed to make the first step easier: understand the information in front of you, explore relevant risk factors, and know when it is time to speak with a qualified professional.</p>
+            <p>Our tools are built to support conversations with healthcare teams, not replace them. Every prediction is a starting point for informed attention, never a diagnosis.</p>
+        </div>
+    </section>
+
+    <section class="about-values">
+        <div class="section-title">
+            <span class="eyebrow">What we focus on</span>
+            <h2>A more thoughtful health experience</h2>
+        </div>
+        <div class="about-value-grid">
+            <article class="about-value-card">
+                <div class="about-value-icon"><i class="fa-solid fa-chart-line"></i></div>
+                <h3>Clearer signals</h3>
+                <p>Turn selected health details into understandable screening insights without burying the important context.</p>
+            </article>
+            <article class="about-value-card">
+                <div class="about-value-icon"><i class="fa-solid fa-comments"></i></div>
+                <h3>Human language</h3>
+                <p>Use our assistant and report analysis tools to explore medical information in plain, practical language.</p>
+            </article>
+            <article class="about-value-card">
+                <div class="about-value-icon"><i class="fa-solid fa-user-shield"></i></div>
+                <h3>Responsible guidance</h3>
+                <p>Keep professional care at the center with reminders that screening tools cannot replace a clinician.</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="about-cta">
+        <div>
+            <span class="eyebrow">Start with a question</span>
+            <h2>Explore your health profile with more confidence.</h2>
+        </div>
+        <a href="{{ url_for('home') }}#predictions" class="btn-primary">View prediction tools <i class="fa-solid fa-arrow-right"></i></a>
+    </section>
+</main>
+{% endblock %}

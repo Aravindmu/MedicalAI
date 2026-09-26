@@ -1,0 +1,302 @@
+{% extends "base.html" %}
+{% block title %}Virus Defense - MediPulse{% endblock %}
+{% block content %}
+<main class="virus-game-page">
+    <section class="virus-game-shell" aria-labelledby="gameTitle">
+        <div class="virus-game-heading">
+            <a class="back-link" href="{{ url_for('home') }}"><i class="fa-solid fa-arrow-left"></i> Back to
+                MediPulse</a>
+            <span class="hero-badge"><i class="fa-solid fa-shield-virus"></i> Interactive learning game</span>
+            <h1 id="gameTitle">Virus <em>Defense</em></h1>
+            <p>Use the syringe cursor to clear the incoming virus particles before they escape.</p>
+        </div>
+
+        <div class="virus-game-toolbar" aria-label="Game status">
+            <div class="game-stat"><span>Score</span><strong id="gameScore">000</strong></div>
+            <div class="game-stat"><span>Viruses cleared</span><strong id="gameCleared">0</strong></div>
+            <div class="game-lives" aria-label="Lives remaining"><span>Containment</span><strong id="gameLives">● ●
+                    ●</strong></div>
+            <button class="game-control" id="pauseGame" type="button"><i
+                    class="fa-solid fa-pause"></i><span>Pause</span></button>
+            <button class="game-control" id="restartGame" type="button"><i
+                    class="fa-solid fa-rotate-right"></i><span>Restart</span></button>
+        </div>
+
+        <div class="virus-canvas-wrap">
+            <canvas id="virusCanvas" aria-label="Virus defense game area"></canvas>
+            <div class="game-start-card" id="gameStartCard">
+                <span class="game-start-icon"><i class="fa-solid fa-syringe"></i></span>
+                <h2>Ready to defend?</h2>
+                <p>Move across the field to activate the syringe and clear the viruses.</p>
+                <button class="btn-primary" id="startGame" type="button">Start game <i
+                        class="fa-solid fa-play"></i></button>
+            </div>
+            <div class="game-message" id="gameMessage" hidden></div>
+        </div>
+        <p class="game-disclaimer"><i class="fa-solid fa-circle-info"></i> Educational mini-game only. It does not
+            represent real medical treatment.</p>
+    </section>
+</main>
+
+<script>
+    (() => {
+        const canvas = document.getElementById('virusCanvas');
+        const context = canvas.getContext('2d');
+        const wrap = canvas.parentElement;
+        const startCard = document.getElementById('gameStartCard');
+        const message = document.getElementById('gameMessage');
+        const scoreText = document.getElementById('gameScore');
+        const clearedText = document.getElementById('gameCleared');
+        const livesText = document.getElementById('gameLives');
+        const pauseButton = document.getElementById('pauseGame');
+        const restartButton = document.getElementById('restartGame');
+        let width = 0;
+        let height = 0;
+        let scale = 1;
+        let lastTime = 0;
+        let spawnTimer = 0;
+        let score = 0;
+        let cleared = 0;
+        let lives = 3;
+        let running = false;
+        let paused = false;
+        let viruses = [];
+        let particles = [];
+        let pointer = { x: -100, y: -100, previousX: -100, previousY: -100, active: false };
+
+        const virusColors = ['#fb7185', '#c084fc', '#60a5fa', '#fbbf24', '#34d399'];
+        const random = (min, max) => Math.random() * (max - min) + min;
+
+        function resizeCanvas() {
+            const rect = wrap.getBoundingClientRect();
+            scale = window.devicePixelRatio || 1;
+            width = rect.width;
+            height = Math.max(440, Math.min(610, window.innerHeight * .64));
+            canvas.style.height = `${height}px`;
+            canvas.width = width * scale;
+            canvas.height = height * scale;
+            context.setTransform(scale, 0, 0, scale, 0, 0);
+        }
+
+        function resetGame() {
+            score = 0;
+            cleared = 0;
+            lives = 3;
+            viruses = [];
+            particles = [];
+            spawnTimer = 0;
+            paused = false;
+            updateHud();
+            pauseButton.innerHTML = '<i class="fa-solid fa-pause"></i><span>Pause</span>';
+            message.hidden = true;
+        }
+
+        function updateHud() {
+            scoreText.textContent = String(score).padStart(3, '0');
+            clearedText.textContent = cleared;
+            livesText.textContent = `${'● '.repeat(lives)}${'○ '.repeat(3 - lives)}`.trim();
+        }
+
+        function spawnVirus() {
+            const radius = random(19, 29);
+            viruses.push({
+                x: random(radius, width - radius),
+                y: height + radius,
+                radius,
+                speed: random(55, 92) + cleared * .4,
+                drift: random(-22, 22),
+                phase: random(0, Math.PI * 2),
+                color: virusColors[Math.floor(Math.random() * virusColors.length)],
+                rotation: random(0, Math.PI),
+                spin: random(-1.2, 1.2),
+                escaped: false
+            });
+        }
+
+        function drawBackground(time) {
+            const gradient = context.createLinearGradient(0, 0, 0, height);
+            gradient.addColorStop(0, '#07162d');
+            gradient.addColorStop(1, '#0c2745');
+            context.fillStyle = gradient;
+            context.fillRect(0, 0, width, height);
+            context.strokeStyle = 'rgba(125, 211, 252, .08)';
+            context.lineWidth = 1;
+            for (let x = 0; x < width; x += 48) {
+                context.beginPath();
+                context.moveTo(x, 0);
+                context.lineTo(x, height);
+                context.stroke();
+            }
+            for (let y = 0; y < height; y += 48) {
+                context.beginPath();
+                context.moveTo(0, y);
+                context.lineTo(width, y);
+                context.stroke();
+            }
+            context.fillStyle = 'rgba(96, 165, 250, .42)';
+            for (let index = 0; index < 24; index += 1) {
+                const x = (index * 113) % width;
+                const y = (index * 71 + time * .012) % height;
+                context.beginPath();
+                context.arc(x, y, index % 3 === 0 ? 2 : 1, 0, Math.PI * 2);
+                context.fill();
+            }
+        }
+
+        function drawVirus(virus) {
+            context.save();
+            context.translate(virus.x, virus.y);
+            context.rotate(virus.rotation);
+            context.shadowColor = virus.color;
+            context.shadowBlur = 18;
+            context.strokeStyle = virus.color;
+            context.lineWidth = 4;
+            const spikes = 12;
+            for (let index = 0; index < spikes; index += 1) {
+                const angle = (Math.PI * 2 * index) / spikes;
+                context.beginPath();
+                context.moveTo(Math.cos(angle) * virus.radius * .68, Math.sin(angle) * virus.radius * .68);
+                context.lineTo(Math.cos(angle) * virus.radius * 1.2, Math.sin(angle) * virus.radius * 1.2);
+                context.stroke();
+                context.fillStyle = virus.color;
+                context.beginPath();
+                context.arc(Math.cos(angle) * virus.radius * 1.2, Math.sin(angle) * virus.radius * 1.2, 4, 0, Math.PI * 2);
+                context.fill();
+            }
+            context.shadowBlur = 0;
+            const core = context.createRadialGradient(-virus.radius * .3, -virus.radius * .3, 2, 0, 0, virus.radius);
+            core.addColorStop(0, '#fff');
+            core.addColorStop(.18, virus.color);
+            core.addColorStop(1, '#7c3aed');
+            context.fillStyle = core;
+            context.beginPath();
+            context.arc(0, 0, virus.radius * .72, 0, Math.PI * 2);
+            context.fill();
+            context.fillStyle = 'rgba(15, 23, 42, .62)';
+            [[-.25, -.18], [.25, -.18], [0, .2]].forEach(([x, y]) => {
+                context.beginPath();
+                context.arc(x * virus.radius, y * virus.radius, virus.radius * .12, 0, Math.PI * 2);
+                context.fill();
+            });
+            context.restore();
+        }
+
+        function drawSyringe() {
+            if (!pointer.active) return;
+            context.save();
+            context.translate(pointer.x, pointer.y);
+            context.rotate(-Math.PI / 4);
+            context.shadowColor = '#67e8f9';
+            context.shadowBlur = 16;
+            context.strokeStyle = '#e0f2fe';
+            context.lineWidth = 3;
+            context.fillStyle = '#38bdf8';
+            context.fillRect(-7, -31, 14, 43);
+            context.fillStyle = '#0f3b62';
+            context.fillRect(-5, -26, 10, 25);
+            context.strokeStyle = '#a7f3d0';
+            context.beginPath();
+            context.moveTo(-12, -34); context.lineTo(12, -34);
+            context.moveTo(-10, 12); context.lineTo(10, 12);
+            context.moveTo(0, 12); context.lineTo(0, 32);
+            context.stroke();
+            context.restore();
+        }
+
+        function addBurst(x, y, color) {
+            for (let index = 0; index < 13; index += 1) {
+                particles.push({ x, y, color, life: .6, vx: random(-110, 110), vy: random(-110, 110), size: random(2, 5) });
+            }
+        }
+
+        function intersects(virus) {
+            const dx = pointer.x - virus.x;
+            const dy = pointer.y - virus.y;
+            return Math.sqrt(dx * dx + dy * dy) < virus.radius + 27;
+        }
+
+        function update(delta, time) {
+            spawnTimer += delta;
+            if (spawnTimer > Math.max(.42, .9 - cleared * .003)) {
+                spawnVirus();
+                spawnTimer = 0;
+            }
+            viruses.forEach(virus => {
+                virus.y -= virus.speed * delta;
+                virus.x += Math.sin(time * .001 + virus.phase) * virus.drift * delta;
+                virus.rotation += virus.spin * delta;
+                if (virus.y < -virus.radius && !virus.escaped) {
+                    virus.escaped = true;
+                    lives -= 1;
+                    updateHud();
+                    if (lives <= 0) endGame();
+                }
+            });
+            viruses = viruses.filter(virus => !virus.escaped);
+            if (pointer.active) viruses = viruses.filter(virus => {
+                if (intersects(virus)) {
+                    score += 10;
+                    cleared += 1;
+                    addBurst(virus.x, virus.y, virus.color);
+                    updateHud();
+                    return false;
+                }
+                return true;
+            });
+            particles.forEach(particle => { particle.x += particle.vx * delta; particle.y += particle.vy * delta; particle.vy += 180 * delta; particle.life -= delta; });
+            particles = particles.filter(particle => particle.life > 0);
+        }
+
+        function render(time) {
+            drawBackground(time);
+            viruses.forEach(drawVirus);
+            particles.forEach(particle => { context.globalAlpha = Math.max(0, particle.life); context.fillStyle = particle.color; context.beginPath(); context.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2); context.fill(); context.globalAlpha = 1; });
+            drawSyringe();
+        }
+
+        function frame(time) {
+            if (!running) return;
+            const delta = Math.min(.033, (time - lastTime) / 1000 || 0);
+            lastTime = time;
+            if (!paused) update(delta, time);
+            render(time);
+            requestAnimationFrame(frame);
+        }
+
+        function startGame() {
+            resetGame();
+            running = true;
+            startCard.hidden = true;
+            lastTime = performance.now();
+            requestAnimationFrame(frame);
+        }
+
+        function endGame() {
+            running = false;
+            message.hidden = false;
+            message.innerHTML = `<strong>Containment breached</strong><span>Final score: ${score}</span><button class="btn-primary" id="playAgain" type="button">Play again <i class="fa-solid fa-rotate-right"></i></button>`;
+            document.getElementById('playAgain').addEventListener('click', startGame);
+        }
+
+        function setPointer(event) {
+            const rect = canvas.getBoundingClientRect();
+            pointer.previousX = pointer.x;
+            pointer.previousY = pointer.y;
+            pointer.x = event.clientX - rect.left;
+            pointer.y = event.clientY - rect.top;
+            pointer.active = true;
+        }
+
+        canvas.addEventListener('pointermove', setPointer);
+        canvas.addEventListener('pointerdown', event => { setPointer(event); canvas.setPointerCapture(event.pointerId); });
+        canvas.addEventListener('pointerleave', () => { pointer.active = false; });
+        canvas.addEventListener('pointerup', () => { pointer.active = false; });
+        pauseButton.addEventListener('click', () => { if (!running) return; paused = !paused; pauseButton.innerHTML = paused ? '<i class="fa-solid fa-play"></i><span>Resume</span>' : '<i class="fa-solid fa-pause"></i><span>Pause</span>'; });
+        restartButton.addEventListener('click', startGame);
+        document.getElementById('startGame').addEventListener('click', startGame);
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        render(0);
+    })();
+</script>
+{% endblock %}

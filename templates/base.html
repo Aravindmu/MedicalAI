@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MediPulse - AI Healthcare & Prediction Assistant{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Marked.js for formatting AI responses cleanly -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- SPLASH SCREEN -->
+    <div id="splash-screen" role="status" aria-label="Opening MediPulse">
+        <div class="explosion-wave"></div>
+        <div class="splash-content">
+            <i class="fa-solid fa-heart-pulse splash-icon"></i>
+            <div class="splash-loader-text" id="splashPercentage">1%</div>
+            <div class="splash-bar-container">
+                <div class="splash-bar-fill" id="splashBarFill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NAVIGATION BAR -->
+    <header>
+        <div class="nav-container">
+            <a href="{{ url_for('home') }}" class="brand-logo">
+                <i class="fa-solid fa-heart-pulse"></i> MediPulse
+            </a>
+            <ul class="nav-links">
+                <li><a href="#predictions">Predictions</a></li>
+                <li><a href="#assistant">AI & Reports</a></li>
+                <li><a href="{{ url_for('health_facts') }}">Health Facts</a></li>
+                <li><a href="{{ url_for('virus_defense') }}">Virus Defense</a></li>
+                <li><a href="#predictions" class="nav-btn">Get Started</a></li>
+            </ul>
+        </div>
+    </header>
+
+    {% block content %}{% endblock %}
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <a href="#" class="brand-logo" style="color: white;">
+                <i class="fa-solid fa-heart-pulse"></i> MediPulse
+            </a>
+            <ul class="footer-links">
+                <li><a href="{{ url_for('about') }}">About Us</a></li>
+                <!-- <li><a href="#">Contact Clinical Team</a></li> -->
+                <li><a href="{{ url_for('privacy') }}">Privacy Policy</a></li>
+                <li><a href="{{ url_for('terms') }}">Terms of Service</a></li>
+            </ul>
+            <p class="copyright">&copy; 2026 MediPulse Diagnostics. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            let currentPercent = 1;
+            const percentageText = document.getElementById('splashPercentage');
+            const barFill = document.getElementById('splashBarFill');
+            const splashScreen = document.getElementById('splash-screen');
+
+            const loadInterval = setInterval(() => {
+                currentPercent += 2;
+                if (currentPercent >= 100) {
+                    currentPercent = 100;
+                    clearInterval(loadInterval);
+                    splashScreen.style.opacity = '0';
+                    setTimeout(() => { splashScreen.style.display = 'none'; }, 600);
+                }
+                percentageText.innerText = currentPercent + '%';
+                barFill.style.width = currentPercent + '%';
+            }, 25);
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Lung Cancer Risk Check - MediPulse{% endblock %}
+{% block content %}
+<main class="lung-page">
+    <section class="lung-intro">
+        <a class="back-link" href="{{ url_for('home') }}#predictions"><i class="fa-solid fa-arrow-left"></i> Back to predictions</a>
+        <span class="hero-badge"><i class="fa-solid fa-lungs"></i> Personal health screening</span>
+        <h1>Understand your<br><em>lung health risk.</em></h1>
+        <p>Answer a few questions about symptoms and health history to receive an educational lung-cancer risk screening.</p>
+        <!-- <div class="screening-note"><i class="fa-solid fa-circle-info"></i><span>This tool is for educational screening only and is not a diagnosis. It cannot replace medical testing.</span></div> -->
+    </section>
+
+    <section class="lung-panel">
+        <div class="lung-panel-heading">
+            <div><span class="eyebrow">Lung cancer risk check</span><h2>Your health details</h2></div>
+            <!-- <span class="step">01 / 01</span> -->
+        </div>
+        {% if error %}<div class="obesity-alert">{{ error }}</div>{% endif %}
+        <form method="post" class="lung-form">
+            <div class="lung-form-grid">
+                <label>Gender<select name="GENDER" required><option value="">Choose</option><option value="1">Male</option><option value="0">Female</option></select></label>
+                <label>Age <span>(years)</span><input name="AGE" type="number" min="1" max="120" required></label>
+                <label>Smoking<select name="SMOKING" required><option value="">Choose</option><option value="0">No</option><option value="1">Yes</option></select></label>
+                <label>Yellow fingers<select name="YELLOW_FINGERS" required><option value="">Choose</option><option value="0">No</option><option value="1">Yes</option></select></label>
+                <label>Anxiety<select name="ANXIETY" required><option value="">Choose</option><option value="0">No</option><option value="1">Yes</option></select></label>
+                <label>Peer pressure<select name="PEER_PRESSURE" required><option value="">Choose</option><option value="0">No</option><option value="1">Yes</option></select></label>
+                <label>Chronic disease<select name="CHRONIC DISEASE" required><option value="">Choose</option><option value="0">No</option><option value="1">Yes</option></select></label>
+                <label>Fatigue<select name="FATIGUE" required><option value="">Choose</option><option value="0">No</option><option value="1">Yes</option></select></label>
+                <label>Allergy<select name="ALLERGY" required><option value="">Choose</option><option value="0">No</option><option value="1">Yes</option></select></label>
+                <label>Wheezing<select name="WHEEZING" required><option value="">Choose</option><option value="0">No</option><option value="1">Yes</option></select></label>
+                <label>Alcohol consuming<select name="ALCOHOL CONSUMING" required><option value="">Choose</option><option value="0">No</option><option value="1">Yes</option></select></label>
+                <label>Coughing<select name="COUGHING" required><option value="">Choose</option><option value="0">No</option><option value="1">Yes</option></select></label>
+                <label>Shortness of breath<select name="SHORTNESS OF BREATH" required><option value="">Choose</option><option value="0">No</option><option value="1">Yes</option></select></label>
+                <label>Swallowing difficulty<select name="SWALLOWING DIFFICULTY" required><option value="">Choose</option><option value="0">No</option><option value="1">Yes</option></select></label>
+                <label>Chest pain<select name="CHEST PAIN" required><option value="">Choose</option><option value="0">No</option><option value="1">Yes</option></select></label>
+            </div>
+            <button type="submit" class="btn-primary lung-submit">Predict lung cancer risk <i class="fa-solid fa-arrow-right"></i></button>
+        </form>
+        {% if result %}
+        <div class="lung-result {{ 'high' if result.is_high_risk else 'low' }}">
+            <i class="fa-solid {{ 'fa-triangle-exclamation' if result.is_high_risk else 'fa-circle-check' }}"></i>
+            <div><span class="eyebrow">Screening result</span><strong>{{ result.label }}</strong><p>{% if result.probability is not none %}Model probability: {{ result.probability }}%. {% endif %}This screening should be reviewed with a qualified healthcare professional.</p></div>
+        </div>
+        {% endif %}
+    </section>
+</main>
+{% endblock %}

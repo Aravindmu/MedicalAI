@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="hero-section" id="hero">
+    <video class="hero-video-bg" id="heroVideo" muted playsinline>
+        <source src="{{ url_for('static', filename='videos/New Project 7 [DE3EEA8].mp4') }}" type="video/mp4">
+
+    </video>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <span class="hero-badge"><i class="fa-solid fa-shield-halved"></i> Next-Gen AI Diagnostics</span>
+        <h1>Your Personalized Health & Risk Intelligence Hub</h1>
+        <p>Advanced predictive analysis for Heart Stroke, Obesity, Lung Cancer, and Hypertension engineered for early
+            clinical precision.</p>
+        <div class="btn-group">
+            <a href="#predictions" class="btn-primary">Start Risk Analysis <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#assistant" class="btn-secondary">AI Medical Assistant</a>
+        </div>
+        <a class="game-entry-link" href="{{ url_for('virus_defense') }}"><i class="fa-solid fa-shield-virus"></i> Play
+            Virus Defense</a>
+    </div>
+</section>
+
+<!-- MAIN DASHBOARD CONTENT -->
+<div class="main-container">
+
+    <!-- PREDICTION MODULES -->
+    <div class="section-title section-title-left" id="predictions">
+        <div><span class="eyebrow">Choose your starting point</span>
+            <h2>Four ways to check in.</h2>
+        </div>
+        <p>Each screening is built for a focused conversation with your healthcare professional.</p>
+    </div>
+
+    <div class="grid-4">
+        <div class="prediction-card">
+            <div>
+                <div class="card-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+                <h3>Heart Stroke</h3>
+                <p>Evaluate cardiovascular risk factors using blood pressure, glucose metrics, and lifestyle tracking.
+                </p>
+            </div>
+            <a href="{{ url_for('heart_stroke_prediction') }}" class="card-link">Run Stroke Check <i
+                    class="fa-solid fa-chevron-right"></i></a>
+        </div>
+        <div class="prediction-card">
+            <div>
+                <div class="card-icon"><i class="fa-solid fa-weight-scale"></i></div>
+                <h3>Obesity Risk</h3>
+                <p>Analyze body mass indices, dietary habits, and metabolic indicators for robust weight management.</p>
+            </div>
+            <a href="{{ url_for('obesity_prediction') }}" class="card-link">Run Obesity Check <i
+                    class="fa-solid fa-chevron-right"></i></a>
+        </div>
+        <div class="prediction-card">
+            <div>
+                <div class="card-icon"><i class="fa-solid fa-lungs"></i></div>
+                <h3>Lung Cancer</h3>
+                <p>Screen respiratory parameters, environmental exposure histories, and genetic markers.</p>
+            </div>
+            <a href="{{ url_for('lung_cancer_prediction') }}" class="card-link">Run Lung Check <i
+                    class="fa-solid fa-chevron-right"></i></a>
+        </div>
+        <div class="prediction-card">
+            <div>
+                <div class="card-icon"><i class="fa-solid fa-gauge-high"></i></div>
+                <h3>Hypertension</h3>
+                <p>Monitor systolic/diastolic trends, stress parameters, and sodium dietary intake levels.</p>
+            </div>
+            <a href="{{ url_for('hypertension_prediction') }}" class="card-link">Run BP Check <i
+                    class="fa-solid fa-chevron-right"></i></a>
+        </div>
+    </div>
+
+    <!-- AI ASSISTANT & MEDICAL REPORT ANALYZER -->
+    <div class="assistant-facts-grid">
+
+        <!-- Gemini Medical & Emotional Support Assistant -->
+        <div class="panel-box assistant-glow-card" id="assistant">
+            <h3><i class="fa-solid fa-robot"></i> Medical & Emotional AI Assistant</h3>
+            <div class="chat-container" id="chatContainer">
+                <div class="chat-bubble bot">Hello! I am your MediPulse clinical companion. Ask me any medical or
+                    emotional support questions.</div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="userInput" placeholder="Ask health or emotional queries...">
+                <button class="btn-primary" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+
+        <!-- Medical Report Analyzer Card -->
+        <div class="panel-box assistant-glow-card">
+            <h3><i class="fa-solid fa-file-medical"></i> Medical Report Analyzer</h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">Upload your lab report or scan
+                (Image/PDF) to get descriptive disease insights and remedies.</p>
+            <div class="form-group" style="margin-bottom: 15px;">
+                <input type="file" id="reportFile" accept="image/*,.pdf" style="padding: 8px;">
+            </div>
+            <button class="btn-primary" onclick="uploadReport()" style="width: 100%; justify-content: center;">Analyze
+                Report <i class="fa-solid fa-wand-magic-sparkles"></i></button>
+            <div class="chat-container" id="reportResultContainer" style="margin-top: 15px; height: 160px;">
+                <div class="chat-bubble bot">Upload a report above to view detailed explanations and remedies.</div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    // Video Scroll Handler
+    const video = document.getElementById('heroVideo');
+    let hasPlayedOnLoad = false;
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            video.play().then(() => { hasPlayedOnLoad = true; }).catch(e => console.log(e));
+        }, 1200);
+    });
+
+    const heroObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) { if (video.paused && hasPlayedOnLoad) video.play(); }
+            else { if (!video.paused) video.pause(); }
+        });
+    }, { threshold: 0.3 });
+    heroObserver.observe(document.getElementById('hero'));
+
+    // Form Switcher
+    function loadForm(type) {
+        const title = document.getElementById('form-title');
+        const container = document.getElementById('formFieldsContainer');
+        if (type === 'stroke') {
+            title.innerText = "Heart Stroke Prediction Module";
+            container.innerHTML = `<div class="form-group"><label>Age</label><input type="number" required></div><div class="form-group"><label>Glucose</label><input type="number" required></div>`;
+        } else if (type === 'obesity') {
+            title.innerText = "Obesity Risk Analysis Module";
+            container.innerHTML = `<div class="form-group"><label>Height (m)</label><input type="number" step="0.01" required></div><div class="form-group"><label>Weight (kg)</label><input type="number" required></div>`;
+        } else if (type === 'lung') {
+            title.innerText = "Lung Cancer Risk Screening Module";
+            container.innerHTML = `<div class="form-group"><label>Years Smoking</label><input type="number" required></div>`;
+        } else if (type === 'hypertension') {
+            title.innerText = "Hypertension Assessment Module";
+            container.innerHTML = `<div class="form-group"><label>Systolic BP</label><input type="number" required></div><div class="form-group"><label>Diastolic BP</label><input type="number" required></div>`;
+        }
+    }
+
+    // Gemini Chat Integration (Formatted with Marked.js)
+    async function sendChatMessage() {
+        const input = document.getElementById('userInput');
+        const container = document.getElementById('chatContainer');
+        if (!input.value.trim()) return;
+
+        const userText = input.value;
+        container.innerHTML += `<div class="chat-bubble" style="background:var(--accent); color:white; align-self:flex-end;">${userText}</div>`;
+        input.value = '';
+        container.scrollTop = container.scrollHeight;
+
+        try {
+            const res = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: userText })
+            });
+            const data = await res.json();
+            const formattedReply = marked.parse(data.reply);
+            container.innerHTML += `<div class="chat-bubble bot">${formattedReply}</div>`;
+        } catch (err) {
+            container.innerHTML += `<div class="chat-bubble bot">Error connecting to server.</div>`;
+        }
+        container.scrollTop = container.scrollHeight;
+    }
+
+    // Medical Report Analyzer Integration (Formatted with Marked.js)
+    async function uploadReport() {
+        const fileInput = document.getElementById('reportFile');
+        const container = document.getElementById('reportResultContainer');
+        if (fileInput.files.length === 0) {
+            alert('Please select a report file first.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('report', fileInput.files[0]);
+
+        container.innerHTML = `<div class="chat-bubble bot">Analyzing medical report with Gemini AI... Please wait.</div>`;
+
+        try {
+            const res = await fetch('/api/analyze-report', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+            const formattedAnalysis = marked.parse(data.analysis);
+            container.innerHTML = `<div class="chat-bubble bot">${formattedAnalysis}</div>`;
+        } catch (err) {
+            container.innerHTML = `<div class="chat-bubble bot">Failed to process report.</div>`;
+        }
+        container.scrollTop = container.scrollHeight;
+    }
+</script>
+{% endblock %}
