@@ -1,6 +1,9 @@
 Flask==3.0.0
+gunicorn>=23.0.0
 scikit-learn==1.6.1
 pandas
 google-genai==0.2.0
 python-dotenv==1.0.0
 Werkzeug==3.0.0
+numpy
+joblib
