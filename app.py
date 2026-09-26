@@ -292,7 +292,7 @@ if not GEMINI_API_KEY:
 client = genai.Client(api_key=GEMINI_API_KEY)
 
 # Model configuration
-MODEL_ID = "gemini-3.6-flash"
+MODEL_ID = "gemini-3.5-flash-lite"
 
 # System prompt config ensuring it only replies to medical and emotional support
 SYSTEM_INSTRUCTION = (
